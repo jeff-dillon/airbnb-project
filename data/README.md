@@ -1,5 +1,7 @@
 # Data Dictionary
 
+AirBnB data from [Kaggle](https://www.kaggle.com/datasets/airbnb/seattle).
+
 
 ## Calendar
 
