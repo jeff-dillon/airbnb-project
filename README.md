@@ -20,20 +20,20 @@ Steps:
 
 1. Clone this repo.
 2. Create a virtual environment and install the packages listed in the requirements.txt file.
-3. ...
+3. Open the `src/01_discover.ipynb` file to view the raw data.
 
 
 
 ## Capstone Project Criteria
 
-1. README file provides information about the project and how to use the code.
-2. ...
-3. ...
+1. This README file provides information about the project and how to use the code.
+2. `data/README.md` provides data dictionary for the data used in the project.
+3. `src/01_discover.ipynb` is a jupyter notebook using pandas to understand the raw data files.
 
 ## Project Layout
 
-- README.md: general information about the project
-- data/raw: raw data files
-- data/clean: cleaned data files
-- data/README.md: data dictionary
-- src/: jupyter notebooks and python scripts
+- `README.md`: general information about the project
+- `data/raw`: raw data files
+- `data/clean`: cleaned data files
+- `data/README.md`: data dictionary
+- `src/01_discover.ipynb`: jupyter notebook for data discovery
