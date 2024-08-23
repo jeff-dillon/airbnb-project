@@ -36,4 +36,4 @@ Steps:
 - data/raw: raw data files
 - data/clean: cleaned data files
 - data/README.md: data dictionary
-- src: jupyter notebooks and python scripts
+- src/: jupyter notebooks and python scripts
