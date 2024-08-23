@@ -19,7 +19,7 @@ Steps:
 ## Getting Started
 
 1. Clone this repo.
-2. ...
+2. Create a virtual environment and install the packages listed in the requirements.txt file.
 3. ...
 
 
