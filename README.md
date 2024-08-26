@@ -19,7 +19,7 @@ Steps:
 ## Getting Started
 
 1. Clone this repo.
-2. Create a virtual environment and install the packages listed in the requirements.txt file.
+2. Create a virtual environment and install the packages listed in the `requirements.txt` file.
 3. Open the `src/01_discover.ipynb` file to view the raw data.
 
 
