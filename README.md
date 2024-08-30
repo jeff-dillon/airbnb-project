@@ -29,6 +29,8 @@ Steps:
 1. This README file provides information about the project and how to use the code.
 2. `data/README.md` provides data dictionary for the data used in the project.
 3. `src/01_discover.ipynb` is a jupyter notebook using pandas to understand the raw data files.
+4. `src/02_clean.py` use pandas to clean a dataset
+5. `src/realestate.py` create custom classes and methods
 
 ## Project Layout
 
@@ -37,3 +39,5 @@ Steps:
 - `data/clean`: cleaned data files
 - `data/README.md`: data dictionary
 - `src/01_discover.ipynb`: jupyter notebook for data discovery
+- `src/02_clean.py` : automated the data cleaning
+- `src/realestate.py` : custom module with real estate properties and methods
