@@ -2,12 +2,14 @@ import mortgage
 
 class SeattleRealEstate:
 
-    loan_term = 30              # 30 year loan term
-    downpayment = 0.25          # 25% downpayment for investment property
-
-    def __init__(self, mortgage_rate : float = 0.075, management_fee : float = 0.1):
+    def __init__(self, mortgage_rate : float = 0.075, 
+                management_fee : float = 0.1,
+                downpayment : float = 0.25,
+                loan_term : int = 30):
         self.mortgage_rate = mortgage_rate
         self.management_fee = management_fee
+        self.downpayment = downpayment
+        self.loan_term = loan_term
 
     def lookup_neighorhood(airbnb_neighborhood:str) -> str :
         """Returns the corresponding Seattle Real Estate Neighborhood given an 
