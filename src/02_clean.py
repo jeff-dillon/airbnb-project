@@ -63,6 +63,24 @@ def clean_market_data(neighborhood, beds):
     return market
 
 
+def clean_listing_data(listings):
+
+    logging.info("- filter our the columns we don't need")
+    clean = listings[["id", "name", "neighbourhood_group_cleansed", 
+                      "property_type", "room_type", "bedrooms","price", 
+                      "availability_30" ]]
+    
+    logging.info("- filter our the rows we don't need")
+    clean = clean.loc[clean["property_type"].isin(['Apartment', 'House', 
+                                                   'Cabin', 'Condominium'])]
+    
+    clean = clean.loc[clean["room_type"] == "Entire home/apt"]
+
+    logging.info("- create the RPP field")
+    clean["rpp"] = clean["price"] * clean["availability_30"]
+
+    return clean
+
 def main():
     # start the logging
     logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -82,7 +100,10 @@ def main():
 
     # clean the airbnb listing data
     logging.info("clean the airbnb listing data")
-    # listings = pd.read_excel("../data/raw/Tableau Full Project.xlsx", sheet_name=0)
+    listings = pd.read_excel("../data/raw/Tableau Full Project.xlsx", sheet_name=0)
+    clean_listings = clean_listing_data(listings)
+    clean_listings.to_csv("../data/clean/seattle_airbnb_listings.csv", index=False)
+
     # sre = SeattleRealEstate()
 
     logging.info("end cleaning process")
