@@ -7,7 +7,14 @@ from realestate import SeattleRealEstate
 # This file reads in raw data filese, performs cleaning steps, and writes out
 # clean data files that can be used for analysis.
 
-def clean_market_data(neighborhood, beds):
+def clean_market_data(neighborhood : pd.DataFrame, beds :  pd.DataFrame) -> pd.DataFrame:
+    """
+    This function contains all of the cleaning steps for the seatlle real estate
+    market data.
+    param: neighborhood - raw DataFrame of housing cost by neighborhood
+    param: beds - raw DataFrame of housing cost by # of bedrooms
+    return: Clean DataFrame of housing cost by neighborhood and # bedrooms
+    """
 
     # This function cleans the seattle housing market data
     # It takes in two raw data frames (cost by bedrooms, cost by nieghborhood)
@@ -84,7 +91,13 @@ def clean_market_data(neighborhood, beds):
     return market
 
 
-def clean_listing_data(listings, market):
+def clean_listing_data(listings : pd.DataFrame, market : pd.DataFrame) -> pd.DataFrame:
+    """
+    This function contains all of the cleaning steps for the airbnb listings data.
+    param: listings - raw DataFrame of airbnb listings
+    param: market - clean DataFrame of housing cost by neighborhood and # bedrooms
+    return: Clean DataFrame of airbnb listings augmented with housing cost data
+    """
 
     # This function cleans the airbnb listings data.
     # it takes in the raw listings data and the clean housing market data and
