@@ -1,12 +1,31 @@
 import mortgage
 import pandas as pd
 
+# The realestate package has one class "SeattleRealEstate" that contains
+# proprerties and methods to calculate real estate metrics.
+#
+# SeattleRealEstate Class
+#
+# Variables:
+# + mortgage_rate               the APR to be used in mortgage calculations
+# + management_fee              the % of short term rental revenue charged as a fee by property management companies
+# + downpayment                 the % of the purchase price required for a short term rental downpayment
+# + loan_term                   the length of the loan for a short term rental mortgage
+#
+# Methods:
+# + lookup_neighorhood()        find the MLS neighborhood given an airbnb neighborhood
+# + calculate_noi()             calculate the net operating income of a listing
+# + calculate_rpp()             calculate the revenue per property of a listing
+# + calculate_downpayment()     calculate the downpayment needed for a listing
+# + calculate_home_price()      calculate the home sale price for a listing
+ 
 class SeattleRealEstate:
 
     def __init__(self, mortgage_rate : float = 0.075, 
                 management_fee : float = 0.1,
                 downpayment : float = 0.25,
                 loan_term : int = 30):
+        # set the default values for all variables
         self.mortgage_rate = mortgage_rate
         self.management_fee = management_fee
         self.downpayment = downpayment
@@ -66,15 +85,23 @@ class SeattleRealEstate:
         param: house price
         return: net operating income
         """
+        # Step 1) calculate the loan amount (price - downpayment)
         loan_amount = house_price - self.calculate_downpayment(house_price)
+
+        # Step 2) use the mortgage package to create a loan object
         loan = mortgage.Loan(loan_amount, self.mortgage_rate, self.loan_term)
+
+        # Step 3) use the loan object to get the monthly payment
         mortgage_expense = float(loan.monthly_payment)
 
+        # Step 4) calculate the revenue per property
         monthly_revenue = self.calculate_rpp(nightly_rate, days_occupied)
 
+        # Step 5) calculate the management expense
         management_expense = float(monthly_revenue * self.management_fee)
 
-        return round(monthly_revenue - mortgage_expense - management_expense,2)
+        # Step 6) return the net operating income
+        return round(monthly_revenue - mortgage_expense - management_expense, 2)
     
 
     def calculate_rpp(self, nightly_rate : float, days_occupied : int) -> float :
@@ -96,7 +123,7 @@ class SeattleRealEstate:
         return home_price * self.downpayment
 
     
-    def calculate_home_price(self, neighborhood, beds, market : pd.DataFrame) -> float :
+    def calculate_home_price(self, neighborhood : str, beds : float, market : pd.DataFrame) -> float :
         """
         returns the home price in dollars based on the neighborhood and number
         of bedrooms
@@ -104,6 +131,14 @@ class SeattleRealEstate:
         param: beds - number of bedrooms
         return: home price in dollars
         """
+        # market data looks like:
+        #
+        # neighborhood, median_price, one_br, two_br, three_br, four_br, five_plus_br
+        # North Seattle,800000,488249,647482,800000,1008992,1125899 
+        # Queen Anne/Magnolia,895000,546229,724370,895000,1128810,1259599
+        #
+        # use the neighborhood to find the correct row in the market data
+        # use the # bedrooms to find the correct column in the market data
         if beds <= 1:
             return market.loc[neighborhood, "one_br"]
         elif beds == 2:
@@ -115,4 +150,4 @@ class SeattleRealEstate:
         elif beds >= 5:
             return market.loc[neighborhood, "five_plus_br"]
         else:
-            return 0
+            return 
