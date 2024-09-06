@@ -21,6 +21,7 @@ Steps:
 1. Clone this repo.
 2. Create a virtual environment and install the packages listed in the `requirements.txt` file.
 3. Open the `src/01_discover.ipynb` file to view the raw data.
+4. Run the `src/02_clean.py` script to clean the raw data.
 
 
 
@@ -34,10 +35,14 @@ Steps:
 
 ## Project Layout
 
-- `README.md`: general information about the project
-- `data/raw`: raw data files
-- `data/clean`: cleaned data files
-- `data/README.md`: data dictionary
-- `src/01_discover.ipynb`: jupyter notebook for data discovery
-- `src/02_clean.py` : automated the data cleaning
-- `src/realestate.py` : custom module with real estate properties and methods
+At a high level, all data is stored in the `data/` directory and all python code is stored in the `src/` directory.
+
+| File | Description |
+| ---- | ----------- |
+| `README.md` | general information about the project |
+| `data/raw` | raw data files |
+| `data/clean` | cleaned data files |
+| `data/README.md` | Data dictionary for the raw data used in the project. |
+| `src/01_discover.ipynb` | Jupyter notebook for data discovery. This notebook shows the thought process for the analysis. Includes research on the project topic, identification of data needed, identification of cleaning needed. |
+| `src/02_clean.py` | Automated the data cleaning script. This script takes in the raw data files and performs cleaning including removing unnecessary columns, renaming columns, removing unnecessary rows, adding calculated fields, etc. |
+| `src/realestate.py` | This is a custom python module with real estate properties and methods. This is where we define some of the values that are used in real estate calculations like mortgage interest rate, mortgage term, downpayment %, and short term rental management fee. This is also where we keep some of the logic for calculating real-estate specific fields like monthly mortgage rate, revenue per property, and net operating income. |
