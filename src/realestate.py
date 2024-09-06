@@ -1,4 +1,5 @@
 import mortgage
+import pandas as pd
 
 class SeattleRealEstate:
 
@@ -11,7 +12,8 @@ class SeattleRealEstate:
         self.downpayment = downpayment
         self.loan_term = loan_term
 
-    def lookup_neighorhood(airbnb_neighborhood:str) -> str :
+
+    def lookup_neighorhood(self, airbnb_neighborhood:str) -> str :
         """Returns the corresponding Seattle Real Estate Neighborhood given an 
         AirBnB Neighborhood
         @param airbnb_neighborhood - the neighborhood to look up
@@ -49,8 +51,12 @@ class SeattleRealEstate:
             "Delridge" : "West Seattle",
             "West Seattle" : "West Seattle"
             }
-        return neighborhood_mapping[airbnb_neighborhood]
-    
+        
+        if airbnb_neighborhood in neighborhood_mapping:
+            return neighborhood_mapping[airbnb_neighborhood]
+        else:
+            return "Other"
+
 
     def calculate_noi(self, nightly_rate : float, days_occupied : int, house_price : int) -> float :
         """
@@ -60,18 +66,18 @@ class SeattleRealEstate:
         param: house price
         return: net operating income
         """
-        loan_amount = house_price * (1 - self.downpayment)
+        loan_amount = house_price - self.calculate_downpayment(house_price)
         loan = mortgage.Loan(loan_amount, self.mortgage_rate, self.loan_term)
-        mortgage_expense = loan.monthly_payment
+        mortgage_expense = float(loan.monthly_payment)
 
         monthly_revenue = self.calculate_rpp(nightly_rate, days_occupied)
 
-        management_expense = monthly_revenue * self.management_fee
+        management_expense = float(monthly_revenue * self.management_fee)
 
-        return monthly_revenue - mortgage_expense - management_expense
+        return round(monthly_revenue - mortgage_expense - management_expense,2)
     
 
-    def calculate_rpp(nightly_rate : float, days_occupied : int) -> float :
+    def calculate_rpp(self, nightly_rate : float, days_occupied : int) -> float :
         """
         returns the revenue per property
         param: nightly rate
@@ -79,3 +85,34 @@ class SeattleRealEstate:
         return: revenue per property
         """
         return nightly_rate * days_occupied
+
+
+    def calculate_downpayment(self, home_price) -> float :
+        """
+        returns the downpayment amount in dollars
+        param: home_price
+        return: downpayment amount
+        """
+        return home_price * self.downpayment
+
+    
+    def calculate_home_price(self, neighborhood, beds, market : pd.DataFrame) -> float :
+        """
+        returns the home price in dollars based on the neighborhood and number
+        of bedrooms
+        param: neighborhood
+        param: beds - number of bedrooms
+        return: home price in dollars
+        """
+        if beds <= 1:
+            return market.loc[neighborhood, "one_br"]
+        elif beds == 2:
+            return market.loc[neighborhood, "two_br"]
+        elif beds == 3:
+            return market.loc[neighborhood, "three_br"]
+        elif beds == 4:
+            return market.loc[neighborhood, "four_br"]
+        elif beds >= 5:
+            return market.loc[neighborhood, "five_plus_br"]
+        else:
+            return 0

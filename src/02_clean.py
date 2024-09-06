@@ -60,10 +60,12 @@ def clean_market_data(neighborhood, beds):
                                                     "West Seattle", 
                                                     "Central Seattle"])]
     
+    market = market.set_index('neighborhood')
+    
     return market
 
 
-def clean_listing_data(listings):
+def clean_listing_data(listings, market):
 
     logging.info("- filter our the columns we don't need")
     clean = listings[["id", "name", "neighbourhood_group_cleansed", 
@@ -73,11 +75,27 @@ def clean_listing_data(listings):
     logging.info("- filter our the rows we don't need")
     clean = clean.loc[clean["property_type"].isin(['Apartment', 'House', 
                                                    'Cabin', 'Condominium'])]
-    
+    # remove records that are not entire home/apt
     clean = clean.loc[clean["room_type"] == "Entire home/apt"]
 
+    # remove records that do not have a value for bedrooms
+    clean = clean.loc[clean["bedrooms"] >= 1]
+
+    clean["days_occupied"] = clean.apply(lambda x: 30 - x.availability_30, axis=1)
+
     logging.info("- create the RPP field")
-    clean["rpp"] = clean["price"] * clean["availability_30"]
+    sre = SeattleRealEstate()
+    clean["rpp"] = clean.apply(lambda x: sre.calculate_rpp(x.price, x.days_occupied), axis=1)
+
+    logging.info("- create the re_neighborhood field")
+    clean["re_neighborhood"] = clean.apply(lambda x: sre.lookup_neighorhood(x.neighbourhood_group_cleansed), axis=1)
+    clean = clean.loc[clean["re_neighborhood"] != "Other"]
+
+    clean["re_home_price"] = clean.apply(lambda x: sre.calculate_home_price(x.re_neighborhood, x.bedrooms, market), axis=1)
+
+    logging.info("- create the noi field")
+    clean["noi"] = clean.apply(lambda x: sre.calculate_noi(x.price, x.days_occupied, x.re_home_price), axis=1)
+
 
     return clean
 
@@ -96,15 +114,13 @@ def main():
     cost_by_neighborhood = pd.read_csv("../data/raw/Home_Cost_By_Neighborhood.csv")
     cost_by_bedrooms = pd.read_csv("../data/raw/Home_Cost_by_Bedrooms.csv")
     seattle_housing_market = clean_market_data(cost_by_neighborhood, cost_by_bedrooms)
-    seattle_housing_market.to_csv("../data/clean/seattle_housing_market_data.csv", index=False)
+    seattle_housing_market.to_csv("../data/clean/seattle_housing_market_data.csv")
 
     # clean the airbnb listing data
     logging.info("clean the airbnb listing data")
     listings = pd.read_excel("../data/raw/Tableau Full Project.xlsx", sheet_name=0)
-    clean_listings = clean_listing_data(listings)
+    clean_listings = clean_listing_data(listings, seattle_housing_market)
     clean_listings.to_csv("../data/clean/seattle_airbnb_listings.csv", index=False)
-
-    # sre = SeattleRealEstate()
 
     logging.info("end cleaning process")
 
