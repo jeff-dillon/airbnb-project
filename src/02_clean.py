@@ -105,17 +105,23 @@ def clean_listing_data(listings : pd.DataFrame, market : pd.DataFrame) -> pd.Dat
     #
     # Cleaning steps:
     # 1) drop the columns we don't need
-    # 2) filter our the rows we don't need (property_type, room_type, bedrooms)
-    # 3) create new fields (days_occupied, rpp, re_neighborhood, re_home_price, noi)
-    # 4) return the clean listings data
+    # 2) change the bedrooms field to int
+    # 3) filter our the rows we don't need (property_type, room_type, bedrooms)
+    # 4) create new fields (days_occupied, rpp, re_neighborhood, re_home_price, noi)
+    # 5) return the clean listings data
 
     # 1) drop the columns we don't need
     logging.debug("- filter our the columns we don't need")
     listings = listings[["id", "name", "neighbourhood_group_cleansed", 
                       "property_type", "room_type", "bedrooms","price", 
                       "availability_30" ]]
+
+    # 2) change the bedrooms column to int
+    logging.debug("- change the bedrooms column to int")
+    listings["bedrooms"] = listings["bedrooms"].fillna(0)
+    listings["bedrooms"] = listings["bedrooms"].astype(int)
     
-    # 2) filter our the rows we don't need (property_type, room_type, bedrooms)
+    # 3) filter our the rows we don't need (property_type, room_type, bedrooms)
     logging.debug("- filter out the property types we don't need")
     listings = listings.loc[listings["property_type"].isin(['Apartment', 'House', 
                                                    'Cabin', 'Condominium'])]
@@ -126,7 +132,7 @@ def clean_listing_data(listings : pd.DataFrame, market : pd.DataFrame) -> pd.Dat
     logging.debug("- filter our the listings that have 0 bedrooms")
     listings = listings.loc[listings["bedrooms"] >= 1]
 
-    # 3) create new fields (days_occupied, rpp, re_neighborhood, re_home_price, noi)
+    # 4) create new fields (days_occupied, rpp, re_neighborhood, re_home_price, noi)
     logging.debug("- create a new field that has the number of days the listing is occupied in a month")
     listings["days_occupied"] = listings.apply(lambda x: 30 - x.availability_30, axis=1)
 
@@ -152,8 +158,10 @@ def clean_listing_data(listings : pd.DataFrame, market : pd.DataFrame) -> pd.Dat
                                                        x.days_occupied, 
                                                        x.re_home_price), axis=1)
     
+    listings = listings[["id", "name", "re_neighborhood", "bedrooms","price",  "days_occupied", "availability_30", "re_home_price",  "rpp", "noi" ]]
+    listings = listings.rename(columns={"re_neighborhood": "neighborhood", "price" : "nightly_rate", "re_home_price" : "home_price"})
     
-    # 4) return the clean listings data
+    # 5) return the clean listings data
     return listings
 
 
